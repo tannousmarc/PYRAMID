@@ -35,13 +35,15 @@ data Bexp = TRUE
           | Bexp :&&: Bexp
           deriving Show
 
---TODO: Big nono, make sure you properly verify this when implementing
+
+-- TODO: Split into DV, DP, whatever
 data Stmnt = Var ::=: Aexp
            | Skip
            | Stmnt :.: Stmnt
            | If Bexp Stmnt Stmnt
            | While Bexp Stmnt
-           | Begin [Stmnt] [Stmnt]
+           | Block [Stmnt] [Pexp] [Stmnt]
+           | Call Proc
            deriving Show
 
 aexp  = chainl aexp_ ((:+:) <$ tok "+")
@@ -72,9 +74,18 @@ stmnt_ = If <$ tok "if" <*> bexp <* tok "then" <*> stmnt <* tok "else" <*> stmnt
       <|> allocation
       <|> Skip <$ tok "skip"
       <|> While <$ tok "while" <*>  bexp <* tok "do" <*> stmnt
+      <|> begin
+      <|> Call <$ tok "call" <*> var
 
-begin  = Begin <$ tok "begin" <*> many declarations <*> many stmnt <* tok "end"
+type Proc = String
+
+data Pexp = Proc Proc Stmnt
+          deriving Show
+
+procedure = Proc <$ tok "proc" <*> var <* tok "is" <*> stmnt
+
+begin  = Block <$ tok "begin" <*> many declaration <*> many procedure <*> many stmnt <* tok "end"
 
 allocation = (::=:) <$> var <* tok ":=" <*> aexp
 
-declarations = tok "var" *> allocation <* tok ";"
+declaration = tok "var" *> allocation
