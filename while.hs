@@ -36,11 +36,12 @@ data Bexp = TRUE
           deriving Show
 
 --TODO: Big nono, make sure you properly verify this when implementing
-data Stmnt = Aexp ::=: Aexp
+data Stmnt = Var ::=: Aexp
            | Skip
            | Stmnt :.: Stmnt
            | If Bexp Stmnt Stmnt
            | While Bexp Stmnt
+           | Begin [Stmnt] [Stmnt]
            deriving Show
 
 aexp  = chainl aexp_ ((:+:) <$ tok "+")
@@ -67,7 +68,13 @@ bexp_ =  TRUE <$ tok "true"
 
 stmnt = chainl stmnt_ ((:.:) <$ tok ";")
 
-stmnt_ = If <$ tok "if" <*> bexp <* tok "then" <*> stmnt_ <* tok "else" <*> stmnt_
-      <|>(::=:) <$> Var <$> var <* tok ":=" <*> aexp
+stmnt_ = If <$ tok "if" <*> bexp <* tok "then" <*> stmnt <* tok "else" <*> stmnt
+      <|> allocation
       <|> Skip <$ tok "skip"
-      <|> While <$ tok "while" <*> bexp <* tok "do" <*> stmnt_
+      <|> While <$ tok "while" <*>  bexp <* tok "do" <*> stmnt
+
+begin  = Begin <$ tok "begin" <*> many declarations <*> many stmnt <* tok "end"
+
+allocation = (::=:) <$> var <* tok ":=" <*> aexp
+
+declarations = tok "var" *> allocation <* tok ";"
