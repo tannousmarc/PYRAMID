@@ -1,4 +1,4 @@
-module While where
+module Parser where
 
 import Yoda
 
@@ -19,12 +19,12 @@ tok :: String -> Parser String
 tok text = string text <* whitespace
 
 
-data Aexp = Num Int
+data Aexp = Num Integer
           | Var Var
           | Aexp :*: Aexp
           | Aexp :-: Aexp
           | Aexp :+: Aexp
-          deriving Show
+          deriving (Show, Eq, Read)
 
 -- boolean logic is UPPERCASE
 data Bexp = TRUE
@@ -33,7 +33,7 @@ data Bexp = TRUE
           | Aexp :<=: Aexp
           | NOT Bexp
           | Bexp :&&: Bexp
-          deriving Show
+          deriving (Show, Eq, Read)
 
 
 -- TODO: Split into DV, DP, whatever
@@ -44,7 +44,9 @@ data Stmnt = Var ::=: Aexp
            | While Bexp Stmnt
            | Block [Stmnt] [Pexp] [Stmnt]
            | Call Proc
-           deriving Show
+           | Aexp Aexp
+           | Bexp Bexp
+           deriving (Show)
 
 aexp  = chainl aexp_ ((:+:) <$ tok "+")
 
@@ -76,6 +78,8 @@ stmnt_ = If <$ tok "if" <*> bexp <* tok "then" <*> stmnt <* tok "else" <*> stmnt
       <|> While <$ tok "while" <*>  bexp <* tok "do" <*> stmnt
       <|> begin
       <|> Call <$ tok "call" <*> var
+      <|> Aexp <$> aexp
+      <|> Bexp <$> bexp
 
 type Proc = String
 
