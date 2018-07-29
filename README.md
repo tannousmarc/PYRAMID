@@ -8,5 +8,7 @@ Wrote this to better understand fundamental Haskell and Language Engineering con
 
 Simply run `ghci pyramid.hs` to start the intrepreter.
 To see the internal representation of a script, use `parse <parser> <input>`. The parser should generally be `stmnt`, with the input being a string.
+
 To run a program, use `runScript <program>`.
+
 To see the value of a variable upon a script's termination, run `valueOf <variable> (runScript <program>)`.
