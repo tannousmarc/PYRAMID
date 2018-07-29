@@ -1,5 +1,6 @@
 # pyramid
 Minimal interpreter for the WHILE language as described by the book Semantics with Applications: A Formal Introduction.
+
 Wrote this to better understand fundamental Haskell and Language Engineering concepts. Instead of Megaparsec, this project makes use of Dr Nicolas Wu's Yoda library.
 
 # Usage
