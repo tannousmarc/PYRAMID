@@ -24,3 +24,4 @@ To see the value of a variable upon a script's termination, run `valueOf <variab
 * Implement arrays.
 * Implement comments.
 * `for` is simple to implement now that I have `while`. Implement it.
+* Implement parens.
