@@ -19,7 +19,7 @@ To see the value of a variable upon a script's termination, run `valueOf <variab
 
 * Some extensions to the language, such as `begin` and `proc` are implemented in the parser but can not be compiled yet.
 * No side-effect constructors exist. Consider implementing IO.
-  ** As a result, for demo purposes, I have implemented `valueOf` as an over-simplifcation.
+  * As a result, for demo purposes, I have implemented `valueOf` as an over-simplifcation.
 * Implement reading/writing from files.
 * Implement arrays.
 * Implement comments.
